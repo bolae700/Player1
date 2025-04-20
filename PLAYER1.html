@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Pavly's Music Universe 🎶</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4A148C;
+            --secondary: #FFC107;
+            --accent: #FFD740;
+            --background: #2A0A3D;
+            --player-bg: linear-gradient(145deg, #6A1B9A, #4A148C);
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: var(--background);
+            color: white;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0.8); }
+            100% { transform: translateY(-100vh) scale(1.2); }
+        }
+
+        .music-box {
+            width: 90%;
+            max-width: 500px;
+            background: var(--player-bg);
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 4px solid var(--secondary);
+            margin: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--secondary);
+            margin: 0 auto 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .profile-container:hover {
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 0 25px var(--secondary);
+            filter: brightness(1.1);
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .player-header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-title {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 3em;
+            color: var(--secondary);
+            text-shadow: 3px 3px var(--primary);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .song-title-wrapper {
+            width: 100%;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .song-title {
+            font-family: 'Luckiest Guy', cursive;
+            color: var(--accent);
+            font-size: 1.6em;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(100%);
+            animation: marquee 5s linear infinite paused;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            color: var(--secondary);
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 25px;
+            position: relative;
+        }
+
+        .music-control {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: var(--primary);
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-control:hover {
+            transform: scale(1.15);
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--secondary);
+        }
+
+        .volume-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .volume-slider {
+            width: 100px;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            transition: opacity 0.2s;
+        }
+
+        .volume-slider:hover {
+            opacity: 0.8;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--secondary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .friends-popup {
+            width: 90%;
+            max-width: 500px;
+            min-height: 300px;
+            background: var(--primary);
+            padding: 25px;
+            border-radius: 30px;
+            border: 4px solid var(--secondary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 999;
+        }
+
+        .friends-popup.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .friend-item {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.3em;
+            color: var(--accent);
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .friend-item:hover {
+            background: var(--player-bg);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 480px) {
+            .music-box {
+                padding: 20px;
+            }
+            
+            .player-title {
+                font-size: 2.5em;
+            }
+            
+            .music-control {
+                width: 45px;
+                height: 45px;
+            }
+
+            .volume-slider {
+                width: 80px;
+            }
+
+            .controls-wrapper {
+                gap: 20px;
+            }
+
+            .friend-item {
+                font-size: 1.1em;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <div class="particle" style="left:10%; animation-delay:0s"></div>
+        <div class="particle" style="left:30%; animation-delay:2s"></div>
+        <div class="particle" style="left:70%; animation-delay:4s"></div>
+        <div class="particle" style="left:50%; animation-delay:6s"></div>
+    </div>
+
+    <div class="music-box">
+        <div class="profile-container">
+            <img src="https://i.ibb.co/pXfwCcv/2d79b46de2deb3744fd330d815b76751.jpg" 
+                 alt="Pavly Emad" 
+                 class="profile-img">
+        </div>
+
+        <div class="player-header">
+            <h1 class="player-title">PAVLY BEATS</h1>
+            <div class="song-title-wrapper">
+                <div class="song-title" id="songTitle">Lolak 7abiby 🎶</div>
+            </div>
+        </div>
+
+        <div class="progress-container" onclick="seek(event)">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="time-display">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+        </div>
+
+        <div class="controls-wrapper">
+            <button class="music-control" onclick="playPause()" id="playBtn">▶</button>
+            
+            <div class="volume-group">
+                <input type="range" class="volume-slider" min="0" max="1" step="0.1" 
+                       value="1" oninput="setVolume(this.value)">
+                <button class="music-control" id="volumeIcon" onclick="toggleMute()">🔊</button>
+            </div>
+
+            <div class="side-controls">
+                <button class="music-control" onclick="showFriends()">👥</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="friends-popup" id="friendsPopup">
+        <h3 style="text-align: center; color: var(--secondary); margin-bottom: 25px;">🌟 The Awesome Squad 🌟</h3>
+        <div style="margin: 20px 0;">
+            <div class="friend-item">🚀 Leader</div>
+            <div class="friend-item">🎨 Dolly</div>
+            <div class="friend-item">💡 Mark</div>
+            <div class="friend-item">🎮 Ramiz</div>
+            <div class="friend-item">📸 Karim</div>
+        </div>
+        <button class="music-control" 
+                style="margin: 20px auto 0; display: block;" 
+                onclick="closePopup()">✖️</button>
+    </div>
+
+    <script>
+        const audio = new Audio('https://serv100.albumaty.com/dl/th/tamer-hosny/albums/eish-besho2ak/01._Lolak_Habiby.mp3');
+        const friendsPopup = document.getElementById('friendsPopup');
+        const songTitle = document.getElementById('songTitle');
+        const volumeIcon = document.getElementById('volumeIcon');
+        let isMuted = false;
+
+        audio.addEventListener('play', () => {
+            songTitle.style.opacity = '1';
+            songTitle.style.animationPlayState = 'running';
+        });
+
+        audio.addEventListener('pause', () => {
+            songTitle.style.opacity = '0';
+            songTitle.style.animationPlayState = 'paused';
+        });
+
+        audio.addEventListener('ended', () => {
+            songTitle.style.opacity = '0';
+            songTitle.style.animation = 'none';
+        });
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            audio.muted = isMuted;
+            volumeIcon.textContent = isMuted ? '🔇' : '🔊';
+        }
+
+        function playPause() {
+            const btn = document.getElementById('playBtn');
+            if(audio.paused) {
+                audio.play();
+                songTitle.style.animation = 'marquee 5s linear infinite';
+                btn.textContent = '⏸';
+            } else {
+                audio.pause();
+                btn.textContent = '▶';
+            }
+        }
+
+        function setVolume(volume) {
+            audio.volume = volume;
+            volumeIcon.textContent = volume == 0 ? '🔇' : '🔊';
+        }
+
+        function seek(e) {
+            const rect = e.target.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = pos * audio.duration;
+        }
+
+        function showFriends() {
+            friendsPopup.classList.add('active');
+        }
+
+        function closePopup() {
+            friendsPopup.classList.remove('active');
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            document.getElementById('progressFill').style.width = 
+                (audio.currentTime / audio.duration) * 100 + '%';
+            
+            document.getElementById('currentTime').textContent = 
+                formatTime(audio.currentTime);
+            
+            document.getElementById('duration').textContent = 
+                formatTime(audio.duration);
+        });
+
+        function formatTime(seconds) {
+            if(isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            seconds = Math.floor(seconds % 60);
+            return `${mins}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        window.onclick = (e) => {
+            if(e.target.classList.contains('music-control') || 
+               e.target.closest('.music-control')) return;
+            
+            if(friendsPopup.classList.contains('active') && 
+               !friendsPopup.contains(e.target)) {
+                closePopup();
+            }
+        }
+    </script>
+</body>
+</html>
